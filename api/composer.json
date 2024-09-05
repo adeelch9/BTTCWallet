@@ -9,17 +9,17 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5|^8.0",
-        "bitwasp/bitcoin": "^1.0",
+        "protonlabs/bitcoin": "^1.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^6.3.1|^7.0.1",
-        "laravel/framework": "^7.29",
-        "laravel/passport": "~9.0",
-        "laravel/tinker": "^2.5",
-        "laravel/ui": "^2.4",
+        "laravel/framework": "^8.29",
+        "laravel/passport": "~10.0",
+        "laravel/tinker": "^3.5",
+        "laravel/ui": "^3.4",
         "web3p/ethereum-tx": "^0.4.3",
         "web3p/ethereum-util": "^0.1.4",
-        "web3p/ethereum-wallet": "^0.1.0",
+        "tonystark/ethereum-wallet": "^0.1.1",
         "web3p/web3.php": "dev-master"
     },
     "require-dev": {

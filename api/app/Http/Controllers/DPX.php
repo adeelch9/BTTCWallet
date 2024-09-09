@@ -131,7 +131,15 @@ class DPX extends Controller
     }
 
 
-
+    public static function bcdechex($dec) {
+        $hex = '';
+        while ($dec != '0') {
+            $last = bcmod($dec, 16);
+            $hex = dechex($last) . $hex;
+            $dec = bcdiv($dec, 16, 0);
+        }
+        return $hex ? $hex : '0';
+    }
     public static function Transfer(string $departure, string $destination, string $amount, string $secret, float $fee = null)
     {
         $wallet = Wallet::where('wallet', $departure)->first();
@@ -167,11 +175,12 @@ class DPX extends Controller
                     'nonce' => "0x" . dechex($transactionCount->toString()),
                     'from' => $departure,
                     'to' => $destination,
-                    'gas' => '0x' . dechex(20000000),
-                    'value' => '0x0',
+                    'gas' => '0x' . dechex(200000),
+                    'value' => '0x' . self::bcdechex($amountInWei),
                     'data' => $rawTransactionData
                 ];
 
+                // Estimate the gas limit
                 $gasLimit = 20000000;
                 $eth->estimateGas($transactionParams, function ($err, $gas) use (&$gasLimit) {
                     if ($err) {
@@ -181,31 +190,14 @@ class DPX extends Controller
                     }
                 });
 
-
-
-                // $factorToMultiplyGasEstimate = "50000000000";
-
-                // $gasPriceMultiplied = hexdec(dechex($estimatedGas->toString())) * $factorToMultiplyGasEstimate;
-
-                // $gasPriceMultiplied = BigNumberFormatter::format($gasPriceMultiplied);
-                $gasPrice = 9000000000000000;
-
-                // $calculatedGasPrice = $eth->estimateGas($transactionParams, function ($err, $gasPrice) use (&$calculatedGasPrice) {
-                //     if ($err) {
-                //         throw new \Exception('Error estimating gas price: ' . $err->getMessage());
-                //     } else {
-                //         $calculatedGasPrice = $gasPrice;
-                //     }
-                // });
-
                 $transactionParams['gasPrice'] = "0x" . dechex($gasLimit->multiply(new BigInteger(500000000000))->toString());
                 $transactionParams['chainId'] = 1029;
 
-                // dd($transactionParams);
+                # Sign the transaction
                 $tx = new EthTransaction($transactionParams);
-
                 $signedTx = '0x' . $tx->sign($secret);
 
+                # Send the transaction
                 $txHash = null;
                 $eth->sendRawTransaction($signedTx, function ($err, $txResult) use (&$txHash) {
                     if ($err) {
@@ -215,6 +207,7 @@ class DPX extends Controller
                     }
                 });
 
+                # Wait for the transaction receipt
                 $txReceipt = null;
                 $secondsToWaitForReceipt = "300";
 

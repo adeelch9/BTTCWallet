@@ -33,7 +33,7 @@ class API extends Controller
 
         $verify = DPX::Verify($wallet, $secret, $hexAddress);
 
-        return $verify ? API::Respond(true) : API::Error('invalid-credentials', true, 'Provided credentials are invalid');
+        return $verify ? API::Respond(true) : API::Error('invalid-credentials', true);
 
     }
 
@@ -60,7 +60,7 @@ class API extends Controller
 
     public function Invalid() {
 
-        return $this->Error('unsupported-action', true, 'Method is not allowed');
+        return $this->Error('unsupported-action', true);
 
     }
 

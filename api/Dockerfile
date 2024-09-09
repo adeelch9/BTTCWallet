@@ -50,5 +50,11 @@ RUN php artisan migrate
 # Generate application key
 RUN php artisan key:generate
 
+RUN php artisan config:cache
+RUN php artisan route:cache
+RUN php artisan view:cache
+
+RUN php artisan route:cache
+
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache

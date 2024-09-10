@@ -3,22 +3,26 @@ BTTCWallet is a Feature-Rich demonstration of a BTT Wallet app built in Telegram
 
 ## Laravel Backend API Depoloyment
 - clone the repository to your server and navigate to the api folder
+  
   ```
   git clone https://github.com/adeelch9/BTTCWallet.git
   cd BTTCWallet/api
   ```
 
 - install dependencies
+  
   ```
   composer install
   ```
 
 - copy the example env file and make the required configuration changes in the .env file
+  
   ```
   cp .env.example .env
   ```
 
 - create SQLite database and set permissions
+  
   ```
   touch database/database.sqlite
   chmod 666 database/database.sqlite
@@ -26,32 +30,39 @@ BTTCWallet is a Feature-Rich demonstration of a BTT Wallet app built in Telegram
   ```
 
 - run migrations
+  
   ```
   php artisan migrate
   ```
 
 - generate a new application key
+  
   ```
   php artisan key:generate
   ```
 
-  - run the server
+- run the server
+  
   ```
   php artisan serve
   ```
 
 ## Testing Backend API
+
   - Generate Wallet:
+  
   ```
   curl --location --request POST 'http://127.0.0.1:8000/api/generate'
   ```
 
   - Get Wallet Balance:
+  
   ```
   curl --location 'http://127.0.0.1:8000/api/balance/<WALLET_ADDRESS>'
   ```
 
   - Send Transaction:
+  
   ```
   curl --location 'http://127.0.0.1:8000/api/transfer' \
 --form 'departure="<SENDERS_WALLET_ADDRESS>"' \
@@ -61,11 +72,13 @@ BTTCWallet is a Feature-Rich demonstration of a BTT Wallet app built in Telegram
   ```
 
   - Get Transaction History:
+  
   ```
   curl --location 'http://127.0.0.1:8000/api/transaction/<TRANSACTION_HASH>'
   ```
 
   - Get Transactions History of a Wallet:
+  
   ```
   curl --location 'http://127.0.0.1:8000/api/transactions' \
 --form 'departure="<SENDERS_WALLET_ADDRESS>"' \
@@ -74,18 +87,22 @@ BTTCWallet is a Feature-Rich demonstration of a BTT Wallet app built in Telegram
 
 
 ## FrontEnd Deployment
+
   - clone the repository to your server and navigate to the frontend folder
+  
   ```
   git clone https://github.com/adeelch9/BTTCWallet.git
   cd BTTCWallet/webApp
   ```
 
   - install dependencies
+  
   ```
   npm install
   ```
 
   - run the server
+  
   ```
   npm run dev
   ```
@@ -96,6 +113,7 @@ BTTCWallet is a Feature-Rich demonstration of a BTT Wallet app built in Telegram
   
   
 ## Telegram Bot Deployment
+
   - Create a new bot on Telegram using the `@BotFather` bot.
   - Use the command `/newapp` to create a new mini app
   - Select your bot and provide a name and description for the app
@@ -103,44 +121,59 @@ BTTCWallet is a Feature-Rich demonstration of a BTT Wallet app built in Telegram
   - Enter the URL where your webApp is hosted (Ensure the URL provided to BotFather is correct and accessible)
   
 ## Test your Mini App
+
   - Open the Telegram app and search for your bot
   - Select your Mini App to open it
   - You should see the Mini App running in the Telegram app
 
 ## Docker Deployment
 
-- Clone the repository:
+  Clone the repository:
+
   ```
   git clone https://github.com/adeelch9/BTTCWallet.git
   ```
+
   Navigate to the project directory:
+
   ```
   cd BTTCWallet
   ```
+
   Navigate to the api folder:
+
   ```
   cd api
   ```
+
   Build the Docker image:
+
   ```
   docker build -t demo/laravel:0.1 .
   ```
+
   Run the Docker container:
+
   ```
   docker run -p 8080:80 demo/laravel:0.1
   ```
+
 ## Testing Docker Deployment
-  - Generate Wallet:
+
+  - Generate Wallet
+  
   ```
   curl --location --request POST 'http://localhost:8080/api/generate'
   ```
 
-  - Get Wallet Balance:
+  - Get Wallet Balance
+  
   ```
   curl --location 'http://localhost:8080/api/balance/<WALLET_ADDRESS>'
   ```
 
-  - Send Transaction:
+  - Send Transaction
+  
   ```
   curl --location 'http://localhost:8080/api/transfer' \
   --form 'departure="<SENDERS_WALLET_ADDRESS>"' \
@@ -149,12 +182,14 @@ BTTCWallet is a Feature-Rich demonstration of a BTT Wallet app built in Telegram
   --form 'amount="<BTT_TOKENS_AMOUNT>"'
   ```
 
-  - Get Transaction History:
+  - Get Transaction History
+  
   ```
   curl --location 'http://localhost:8080/api/transaction/<TRANSACTION_HASH>'
   ```
 
-  - Get Transactions History of a Wallet:
+  - Get Transactions History of a Wallet
+  
   ```
   curl --location 'http://localhost:8080/api/transactions' \
   --form 'departure="<SENDERS_WALLET_ADDRESS>"' \
@@ -162,4 +197,5 @@ BTTCWallet is a Feature-Rich demonstration of a BTT Wallet app built in Telegram
   ```
 
   ## License
+
   This project is licensed under the MIT License.

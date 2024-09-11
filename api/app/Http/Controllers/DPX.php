@@ -131,7 +131,8 @@ class DPX extends Controller
     }
 
 
-    public static function bcdechex($dec) {
+    public static function bcdechex($dec)
+    {
         $hex = '';
         while ($dec != '0') {
             $last = bcmod($dec, 16);
@@ -318,50 +319,59 @@ class DPX extends Controller
 
     public static function GetTransactions(int $offset = 0, string|null $departure = null, string|null $destination = null)
     {
+        $wallet = Wallet::where('wallet', $departure)->first();
 
-        if ($departure && $destination) {
+        if (!$wallet) {
+            return API::Error('invalid-wallet', 'Address does not exist on MiniApp.');
+            
+        } else {
+            if ($departure && $destination) {
 
-            if ($departure === $destination) {
+                if ($departure === $destination) {
+
+                    $transactions = Transaction::where(['departure' => $departure])
+                        ->orWhere(['destination' => $destination])
+                        ->orderby('id', 'DESC')
+                        ->limit(env('TRANSACTIONS_PER_FETCH', 250))
+                        ->offset($offset)
+                        ->get(['transaction', 'departure', 'destination', 'amount', 'fee', 'timestamp']);
+                } else {
+
+                    $transactions = Transaction::where(['departure' => $departure, 'destination' => $destination])
+                        ->orderby('id', 'DESC')
+                        ->limit(env('TRANSACTIONS_PER_FETCH', 250))
+                        ->offset($offset)
+                        ->get(['transaction', 'departure', 'destination', 'amount', 'fee', 'timestamp']);
+                }
+            } else if ($departure) {
 
                 $transactions = Transaction::where(['departure' => $departure])
-                    ->orWhere(['destination' => $destination])
+                    ->orderby('id', 'DESC')
+                    ->limit(env('TRANSACTIONS_PER_FETCH', 250))
+                    ->offset($offset)
+                    ->get(['transaction', 'departure', 'destination', 'amount', 'fee', 'timestamp']);
+            } else if ($destination) {
+
+                $transactions = Transaction::where(['destination' => $destination])
                     ->orderby('id', 'DESC')
                     ->limit(env('TRANSACTIONS_PER_FETCH', 250))
                     ->offset($offset)
                     ->get(['transaction', 'departure', 'destination', 'amount', 'fee', 'timestamp']);
             } else {
 
-                $transactions = Transaction::where(['departure' => $departure, 'destination' => $destination])
-                    ->orderby('id', 'DESC')
+                $transactions = Transaction::orderby('id', 'DESC')
                     ->limit(env('TRANSACTIONS_PER_FETCH', 250))
                     ->offset($offset)
                     ->get(['transaction', 'departure', 'destination', 'amount', 'fee', 'timestamp']);
             }
-        } else if ($departure) {
 
-            $transactions = Transaction::where(['departure' => $departure])
-                ->orderby('id', 'DESC')
-                ->limit(env('TRANSACTIONS_PER_FETCH', 250))
-                ->offset($offset)
-                ->get(['transaction', 'departure', 'destination', 'amount', 'fee', 'timestamp']);
-        } else if ($destination) {
+            $transactions = json_decode(json_encode($transactions), true);
 
-            $transactions = Transaction::where(['destination' => $destination])
-                ->orderby('id', 'DESC')
-                ->limit(env('TRANSACTIONS_PER_FETCH', 250))
-                ->offset($offset)
-                ->get(['transaction', 'departure', 'destination', 'amount', 'fee', 'timestamp']);
-        } else {
-
-            $transactions = Transaction::orderby('id', 'DESC')
-                ->limit(env('TRANSACTIONS_PER_FETCH', 250))
-                ->offset($offset)
-                ->get(['transaction', 'departure', 'destination', 'amount', 'fee', 'timestamp']);
+            return API::Respond($transactions, true);
         }
 
-        $transactions = json_decode(json_encode($transactions), true);
-
-        return API::Respond($transactions, false);
     }
+
+
 
 }

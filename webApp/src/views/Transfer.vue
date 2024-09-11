@@ -37,9 +37,9 @@
 
         Utils.ScanQRCode(i18nLocale.t('wallet.scan_wallet'), (data) => {
 
-            if (/^[A-Fa-f0-9]{32}$/.test(data.data) || /^[A-Fa-f0-9]{32}\/(([0-9]*[.]?)[0-9]?)$/.test(data.data)) {
+            if (/^[A-Fa-f0-9]{42}$/.test(data.data) || /^[A-Fa-f0-9]{42}\/(([0-9]*[.]?)[0-9]?)$/.test(data.data)) {
 
-                if (/^[A-Fa-f0-9]{32}\/(([0-9]*[.]?)[0-9]?)$/.test(data.data)) {
+                if (/^[A-Fa-f0-9]{42}\/(([0-9]*[.]?)[0-9]?)$/.test(data.data)) {
 
                     destination.value = data.data.toString().split('/')[0];
                     amount.value = data.data.toString().split('/')[1];
@@ -150,7 +150,7 @@
 
             <div id="container-button">
                 <button :class="['button', 'button-progress', 'normal', `button-progress-${status}`]" @click="Submit"
-                    :disabled="(status !== 'normal') || !(/^[A-Fa-f0-9]{32}$/.test(wallet) && /^[A-Fa-f0-9]{32}$/.test(destination) && parseFloat(amount) > 0)"><i
+                    :disabled="(status !== 'normal') || !(/^[A-Fa-f0-9]{42}$/.test(wallet) && /^[A-Fa-f0-9]{42}$/.test(destination) && parseFloat(amount) > 0)"><i
                         class="icon-upload"></i><span>{{ $t('transfer.request_transfer') }}</span></button>
             </div>
 

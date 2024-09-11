@@ -323,7 +323,7 @@ class DPX extends Controller
 
         if (!$wallet) {
             return API::Error('invalid-wallet', 'Address does not exist on MiniApp.');
-            
+
         } else {
             if ($departure && $destination) {
 
@@ -367,7 +367,7 @@ class DPX extends Controller
 
             $transactions = json_decode(json_encode($transactions), true);
 
-            return API::Respond($transactions, true);
+            return API::Respond($transactions, 'success');
         }
 
     }

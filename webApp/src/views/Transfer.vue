@@ -126,7 +126,7 @@
             <div class="form-item">
                 <label>{{ $t('transfer.fields.departure') }}</label>
                 <div>
-                    <input type="text" enterkeyhint="done" :placeholder="$t('transfer.fields.departure')" minlength="32" maxlength="32" v-model="wallet"
+                    <input type="text" enterkeyhint="done" :placeholder="$t('transfer.fields.departure')" v-model="wallet"
                         @keydown="Utils.hideKeyboardOnEnter" disabled />
                 </div>
             </div>
@@ -134,7 +134,7 @@
             <div class="form-item">
                 <label>{{ $t('transfer.fields.destination') }}</label>
                 <div>
-                    <input type="text" enterkeyhint="done" :placeholder="$t('transfer.fields.destination')" minlength="32" maxlength="32" v-model="destination"
+                    <input type="text" enterkeyhint="done" :placeholder="$t('transfer.fields.destination')" v-model="destination"
                         @keydown="Utils.hideKeyboardOnEnter" />
                     <i @click="ScanQRCode('destination')" class="icon-maximize"></i>
                 </div>

@@ -60,7 +60,7 @@
             <ul v-if="transactions && transactions.length > 0">
                 <li v-for="transaction in transactions" @click="OpenTransaction(transaction)" :class="transaction.departure === wallet ? 'transfer' : 'receive'">
                     <div>
-                        <h2 class="w550-dots-1">{{ transaction.amount }} BTTC {{ transaction.departure === wallet ? $t('transactions.sent') : $t('transactions.received') }}</h2>
+                        <h2 class="w550-dots-1">{{ transaction.amount }} BTT {{ transaction.departure === wallet ? $t('transactions.sent') : $t('transactions.received') }}</h2>
                         <span
                         style="font-size: 0.5rem;"
                         >{{ $t('transactions.transaction') }}: {{ transaction.transaction }}</span>

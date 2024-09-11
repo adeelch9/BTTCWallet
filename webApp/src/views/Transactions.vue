@@ -31,7 +31,7 @@
 
         let data = await Utils.DPXSendRequest(`/transactions`, { 'departure': wallet.value, 'destination': wallet.value }, 'POST', i18nLocale);
 
-        if (data && `result` in data && data.status === 'true') {
+        if (data && `result` in data && data.status === true) {
 
             transactions.value = data.result;
 

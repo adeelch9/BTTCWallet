@@ -11,7 +11,6 @@ use Web3p\EthereumWallet\Wallet as EthWallet;
 use Web3p\EthereumUtil\Util;
 use BitWasp\Bitcoin\Mnemonic\Bip39\Wordlist\EnglishWordList;
 use Web3\Providers\HttpProvider;
-use Web3\Formatters\BigNumberFormatter;
 use Web3\Contract;
 use Web3\Utils;
 use Web3p\EthereumTx\Transaction as EthTransaction;
@@ -267,7 +266,7 @@ class DPX extends Controller
                 }
 
             } catch (\Exception $e) {
-                return API::Error('invalid-amount', 'Transaction failed due to insufficient funds.');
+                return API::Error('invalid-amount', 'Something went wrong. Please try again.');
             }
 
             return API::Respond($responseData ?? []);

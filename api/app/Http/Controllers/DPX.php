@@ -267,7 +267,7 @@ class DPX extends Controller
                 }
 
             } catch (\Exception $e) {
-                return API::Error('error', $e->getMessage());
+                return API::Error('invalid-amount', 'Transaction failed due to insufficient funds.');
             }
 
             return API::Respond($responseData ?? []);
@@ -322,7 +322,7 @@ class DPX extends Controller
                 }
 
             } catch (\Exception $e) {
-                return API::Error('error', $e->getMessage());
+                return API::Error('error', 'Something went wrong. Please try again later.');
             }
         }
     }

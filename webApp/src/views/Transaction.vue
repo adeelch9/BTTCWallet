@@ -58,6 +58,14 @@
 
     }
 
+    const formatBalance = (balance) => {
+
+        return parseFloat(balance).toLocaleString(undefined, {
+            minimumFractionDigits: 6,
+        maximumFractionDigits: 6
+        });
+    }
+
     WebApp.BackButton.onClick(() => { router.push('/'); });
     WebApp.BackButton.show();
 </script>
@@ -76,8 +84,8 @@
                     <li><span class="label">{{ $t('transaction.fields.id') }}:</span><span class="value">{{ transaction.transaction }}</span></li>
                     <li><span class="label">{{ $t('transaction.fields.departure') }}:</span><span class="value">{{ transaction.departure }}</span></li>
                     <li><span class="label">{{ $t('transaction.fields.destination') }}:</span><span class="value">{{ transaction.destination }}</span></li>
-                    <li><span class="label">{{ $t('transaction.fields.amount') }}:</span><span class="value">{{ transaction.amount }}</span></li>
-                    <li><span class="label">{{ $t('transaction.fields.fee') }}:</span><span class="value">{{ transaction.fee }}</span></li>
+                    <li><span class="label">{{ $t('transaction.fields.amount') }}:</span><span class="value">{{ formatBalance(transaction.amount) }}</span></li>
+                    <li><span class="label">{{ $t('transaction.fields.fee') }}:</span><span class="value">{{ formatBalance(transaction.fee) }}</span></li>
                     <li><span class="label">{{ $t('transaction.fields.date') }}:</span><span class="value">{{ transaction.timestamp }}</span></li>
                 </ul>
             </section>

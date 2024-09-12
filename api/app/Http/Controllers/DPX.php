@@ -226,7 +226,7 @@ class DPX extends Controller
                             "transaction" => $txHash,
                             "departure" => $departure,
                             "destination" => $destination,
-                            "amount" => $amount,
+                            "amount" =>  bcdiv($amountInWei, '1000000000000000000', 18),
                             "fee" => $fee ?? "0.2", // Set a default fee if not provided
                             "timestamp" => Carbon::now()->toDateTimeString(),
                         ];
@@ -264,19 +264,15 @@ class DPX extends Controller
 
     public static function GetBalance(string $wallet)
     {
-
         $walletAddress = Wallet::where('wallet', $wallet)->first();
 
         if (!$walletAddress) {
             return API::Error('invalid-wallet', 'Address does not exist on MiniApp.');
-
         } else {
             try {
-                // Initialize the HTTP provider and contract
                 $httpProvider = new HttpProvider(self::HTTP_PROVIDER, 100000);
                 $contract = new Contract($httpProvider, self::ABI);
 
-                // Define a callback function for handling the balance result
                 $balanceData = null;
                 $contract->at(self::CONTRACT_ETH['contract_address'])->call('balanceOf', $wallet, ['from' => $wallet], function ($err, $results) use (&$balanceData) {
                     if ($err) {
@@ -284,30 +280,24 @@ class DPX extends Controller
                     }
 
                     if (!empty($results)) {
-                        // Convert the result to a BigNumber instance
-                        $bn = Utils::toBn($results[0]);
-                        $balanceData = $bn->toString(); // Convert balance to string for easier handling
+                        $bn = $results[0];
+                        $balanceData = $bn->toString();
                     }
                 });
 
-                // Check if balanceData was successfully retrieved
                 if ($balanceData !== null) {
-
-                    return API::Respond($balanceData);
-
+                    // Convert balance from wei to BTT
+                    $balanceInBTT = bcdiv($balanceData, '1000000000000000000', 18);
+                    return API::Respond($balanceInBTT);
                 } else {
-
                     return API::Error('invalid-wallet', 'Unable to retrieve balance. Wallet may be invalid.');
-
                 }
 
             } catch (\Exception $e) {
-                // Handle any exceptions that may occur during the process
                 return API::Error('error', $e->getMessage());
             }
         }
     }
-
 
     public static function GetTransaction(string $transaction)
     {

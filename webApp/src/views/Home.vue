@@ -45,6 +45,13 @@
 
     };
 
+    const formatBalance = (balance) => {
+        return parseFloat(balance).toLocaleString(undefined, {
+            minimumFractionDigits: 6,
+            maximumFractionDigits: 6
+        });
+    }
+
     const showBadges = (delay = 1000) => {
 
         WebApp.HapticFeedback.impactOccurred('light');
@@ -61,7 +68,7 @@
 
             if (data && `result` in data && data.status === 'success') {
 
-                balance.value = data.result;
+                balance.value = formatBalance(data.result);
                 rank.value    = ranks.data.filter((item) => (item.min <= balance.value)).slice(-1)[0];
 
             }else{
@@ -115,7 +122,7 @@
                 </ul>
             </div>
 
-            <p class="w600-dots-1" style="direction: ltr;"><span style="font-size: 1rem;" class="w500-dots-1">{{ (balance).toLocaleString() }}</span> {{ currencies[currency] }}</p>
+            <p class="w600-dots-1" style="direction: ltr;"><span style="font-size: 1rem;" class="w500-dots-1">{{ balance }}</span> {{ currencies[currency] }}</p>
         </div>
 
         <div id="container-actions">

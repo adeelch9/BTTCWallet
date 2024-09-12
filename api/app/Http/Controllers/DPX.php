@@ -226,7 +226,7 @@ class DPX extends Controller
                             "transaction" => $txHash,
                             "departure" => $departure,
                             "destination" => $destination,
-                            "amount" =>  bcdiv($amountInWei, '1000000000000000000', 18),
+                            "amount" => number_format(bcdiv($amountInWei, '1000000000000000000', 18), 6, '.', ''),
                             "fee" => $fee ?? "0.2", // Set a default fee if not provided
                             "timestamp" => Carbon::now()->toDateTimeString(),
                         ];
@@ -287,7 +287,7 @@ class DPX extends Controller
 
                 if ($balanceData !== null) {
                     // Convert balance from wei to BTT
-                    $balanceInBTT = bcdiv($balanceData, '1000000000000000000', 18);
+                    $balanceInBTT = number_format(bcdiv($balanceData, '1000000000000000000', 18), 6, '.', '');
                     return API::Respond($balanceInBTT);
                 } else {
                     return API::Error('invalid-wallet', 'Unable to retrieve balance. Wallet may be invalid.');

@@ -1,5 +1,5 @@
 <script setup>
-    import { inject, ref } from 'vue';
+    import { inject, ref, computed } from 'vue';
     import { useI18n } from "vue-i18n";
     import { useRouter, useRoute } from 'vue-router';
 
@@ -127,7 +127,7 @@
     const isValidTransfer = computed(() => {
         return isValidDestination.value && isValidAmount.value;
     });
-    
+
 </script>
 
 <template>

@@ -143,14 +143,14 @@
             <div class="form-item">
                 <label>{{ $t('transfer.fields.amount') }}</label>
                 <div>
-                    <input type="number" enterkeyhint="done" :placeholder="$t('transfer.fields.transfer_amount')" min="0"
+                    <input type="text" enterkeyhint="done" :placeholder="$t('transfer.fields.transfer_amount')"
                         v-model="amount" @keydown="Utils.hideKeyboardOnEnter" />
                 </div>
             </div>
 
             <div id="container-button">
                 <button :class="['button', 'button-progress', 'normal', `button-progress-${status}`]" @click="Submit"
-                    :disabled="parseFloat(amount) < 0 || !destination || isNaN(amount)"
+                    :disabled="parseFloat(amount) < 0 || !destination || isNaN(parseFloat(amount))"
                     ><i
                         class="icon-upload"></i><span>{{ $t('transfer.request_transfer') }}</span></button>
             </div>

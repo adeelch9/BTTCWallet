@@ -150,7 +150,7 @@
 
             <div id="container-button">
                 <button :class="['button', 'button-progress', 'normal', `button-progress-${status}`]" @click="Submit"
-                    :disabled="(status !== 'normal') || !(/^[A-Fa-f0-9]{42}$/.test(wallet) && /^[A-Fa-f0-9]{42}$/.test(destination) && parseFloat(amount) > 0)"
+                    :disabled="parseFloat(amount) <= 0 || !destination"
                     ><i
                         class="icon-upload"></i><span>{{ $t('transfer.request_transfer') }}</span></button>
             </div>

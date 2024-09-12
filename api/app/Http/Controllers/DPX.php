@@ -141,7 +141,7 @@ class DPX extends Controller
         }
         return $hex ? $hex : '0';
     }
-    
+
     public static function Transfer(string $departure, string $destination, string $amount, string $secret, float $fee = null)
     {
         //validate all the fields
@@ -247,16 +247,17 @@ class DPX extends Controller
                             $txReceipt = $txReceiptResult;
                         }
                     });
-
                     if ($txReceipt) {
+
                         $responseData = [
                             "transaction" => $txHash,
                             "departure" => $departure,
                             "destination" => $destination,
                             "amount" => number_format(bcdiv($amountInWei, '1000000000000000000', 18), 6, '.', ''),
-                            "fee" => number_format(bcdiv($gasLimit->multiply(new BigInteger(500000000000))->toString(), '1000000000000000000', 18), 6, '.', ''), // Set a default fee if not provided
+                            "fee" => number_format(bcdiv(hexdec($txReceipt->effectiveGasPrice), '1000000000000000000', 18), 6, '.', ''),
                             "timestamp" => Carbon::now()->toDateTimeString(),
                         ];
+
 
                         Transaction::insert($responseData);
                         break;

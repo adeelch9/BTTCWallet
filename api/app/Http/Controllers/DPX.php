@@ -141,8 +141,35 @@ class DPX extends Controller
         }
         return $hex ? $hex : '0';
     }
+    
     public static function Transfer(string $departure, string $destination, string $amount, string $secret, float $fee = null)
     {
+        //validate all the fields
+        if (!preg_match('/^0x[a-fA-F0-9]{40}$/', $departure)) {
+            return API::Error('invalid-departure', 'Invalid departure address format.');
+        }
+
+        // Validate destination address
+        if (!preg_match('/^0x[a-fA-F0-9]{40}$/', $destination)) {
+            return API::Error('invalid-destination', 'Invalid destination address format.');
+        }
+
+        // Validate amount
+        if (!is_numeric($amount) || $amount <= 0) {
+            return API::Error('invalid-amount', 'Amount must be a positive number.');
+        }
+
+        // Validate secret (private key)
+        if (!preg_match('/^[a-fA-F0-9]{64}$/', $secret)) {
+            return API::Error('invalid-secret', 'Invalid secret (private key) format.');
+        }
+
+        // Validate fee (if provided)
+        if ($fee !== null && (!is_numeric($fee) || $fee < 0)) {
+            return API::Error('invalid-fee', 'Fee must be a non-negative number.');
+        }
+
+
         $wallet = Wallet::where('wallet', $departure)->first();
 
         if (!$wallet) {
@@ -227,7 +254,7 @@ class DPX extends Controller
                             "departure" => $departure,
                             "destination" => $destination,
                             "amount" => number_format(bcdiv($amountInWei, '1000000000000000000', 18), 6, '.', ''),
-                            "fee" => $fee ?? "0.2", // Set a default fee if not provided
+                            "fee" => number_format(bcdiv($gasLimit->multiply(new BigInteger(500000000000))->toString(), '1000000000000000000', 18), 6, '.', ''), // Set a default fee if not provided
                             "timestamp" => Carbon::now()->toDateTimeString(),
                         ];
 

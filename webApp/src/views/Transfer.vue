@@ -1,5 +1,5 @@
 <script setup>
-    import { inject, ref } from 'vue';
+    import { inject, ref, computed } from 'vue';
     import { useI18n } from "vue-i18n";
     import { useRouter, useRoute } from 'vue-router';
 
@@ -30,39 +30,52 @@
     const wallet = ref(Utils.GetWallet('wallet'));
     const secret = ref(Utils.GetWallet('secret'));
 
-    const destination = ref(route.params.destination);
-    const amount = ref(parseFloat(route.params.amount));
+    const balance = ref(0);
+    const gasEstimate = ref(189); // Default gas estimate, you might want to fetch this dynamically
+
+    const destination = ref(route.params.destination || '');
+    const amount = ref(parseFloat(route.params.amount) || '');
+
+    const isValidAddress = computed(() => {
+        return /^0x[a-fA-F0-9]{42}$/.test(destination.value);
+    });
+
+    const isValidAmount = computed(() => {
+        return amount.value > 0 && amount.value <= (balance.value - gasEstimate.value);
+    });
+
+    const canSubmit = computed(() => {
+        return isValidAddress.value && isValidAmount.value;
+    });
+
+    onMounted(async () => {
+        // Fetch user's balance
+        let balanceData = await Utils.DPXSendRequest(`/balance/${wallet.value}`, [], 'GET', i18nLocale);
+        if (balanceData && balanceData.status === 'success') {
+            balance.value = parseFloat(balanceData.result);
+        }
+
+        // You might want to fetch gas estimate here as well
+    });
 
     const ScanQRCode = () => {
-
         Utils.ScanQRCode(i18nLocale.t('wallet.scan_wallet'), (data) => {
-
-            if (/^[A-Fa-f0-9]{42}$/.test(data.data) || /^[A-Fa-f0-9]{42}\/(([0-9]*[.]?)[0-9]?)$/.test(data.data)) {
-
-                if (/^[A-Fa-f0-9]{42}\/(([0-9]*[.]?)[0-9]?)$/.test(data.data)) {
-
-                    destination.value = data.data.toString().split('/')[0];
-                    amount.value = data.data.toString().split('/')[1];
-
-                } else {
-
-                    destination.value = data.data;
-
-                }
-
+            if (/^0x[a-fA-F0-9]{42}$/.test(data.data)) {
+                destination.value = data.data;
                 return true;
-
             }
-
+            Utils.Toast(i18nLocale.t('transfer.toast.invalid_address'), 2500);
             return false;
-
         });
-
     };
 
     const Submit = async () => {
+        if (!canSubmit.value) {
+            Utils.Toast(i18nLocale.t('transfer.toast.invalid_input'), 2500);
+            return;
+        }
 
-        Utils.Prompt(i18nLocale.t('transfer.prompt.verify_transfer.title'), i18nLocale.t('transfer.prompt.verify_transfer.text', { amount: amount.value, destination: destination.value, fee: (import.meta.env.VITE_FEE || (0.2)) }), [
+        Utils.Prompt(i18nLocale.t('transfer.prompt.verify_transfer.title'), i18nLocale.t('transfer.prompt.verify_transfer.text', { amount: amount.value, destination: destination.value, fee: gasEstimate.value }), [
             {
                 text: i18nLocale.t('general.no'),
                 type: "default",
@@ -135,23 +148,33 @@
                 <label>{{ $t('transfer.fields.destination') }}</label>
                 <div>
                     <input type="text" enterkeyhint="done" :placeholder="$t('transfer.fields.destination')" v-model="destination"
-                        @keydown="Utils.hideKeyboardOnEnter" />
-                    <i @click="ScanQRCode('destination')" class="icon-maximize"></i>
+                        @keydown="Utils.hideKeyboardOnEnter" :class="{ 'invalid': destination && !isValidAddress }" />
+                    <i @click="ScanQRCode()" class="icon-maximize"></i>
                 </div>
+                <span v-if="destination && !isValidAddress" class="error-message">{{ $t('transfer.errors.invalid_address') }}</span>
             </div>
 
             <div class="form-item">
                 <label>{{ $t('transfer.fields.amount') }}</label>
                 <div>
-                    <input type="number" enterkeyhint="done" :placeholder="$t('transfer.fields.transfer_amount')" min="0" max="99999999" minlength="0" maxlength="8"
-                        v-model="amount" @keydown="Utils.hideKeyboardOnEnter" />
+                    <input type="number" enterkeyhint="done" :placeholder="$t('transfer.fields.transfer_amount')" 
+                        v-model="amount" @keydown="Utils.hideKeyboardOnEnter" 
+                        :class="{ 'invalid': amount && !isValidAmount }" />
                 </div>
+                <span v-if="amount && !isValidAmount" class="error-message">{{ $t('transfer.errors.insufficient_balance') }}</span>
+            </div>
+
+            <div class="balance-info">
+                <span>{{ $t('transfer.available_balance') }}: {{ balance.toFixed(6) }} BTT</span>
+                <span>{{ $t('transfer.estimated_fee') }}: {{ gasEstimate }} BTT</span>
             </div>
 
             <div id="container-button">
-                <button :class="['button', 'button-progress', 'normal', `button-progress-${status}`]" @click="Submit"
-                    ><i
-                        class="icon-upload"></i><span>{{ $t('transfer.request_transfer') }}</span></button>
+                <button :class="['button', 'button-progress', 'normal', `button-progress-${status}`]" 
+                    @click="Submit" :disabled="!canSubmit">
+                    <i class="icon-upload"></i>
+                    <span>{{ $t('transfer.request_transfer') }}</span>
+                </button>
             </div>
 
         </div>
@@ -185,4 +208,31 @@
         }
     }
     
+    .form-item {
+        .error-message {
+            color: red;
+            font-size: 0.8rem;
+            margin-top: 0.2rem;
+        }
+
+        input.invalid {
+            border-color: red;
+        }
+    }
+
+    .balance-info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: var(--tg-theme-hint-color);
+    }
+
+    #container-button {
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
 </style>

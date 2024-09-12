@@ -31,7 +31,7 @@
     const secret = ref(Utils.GetWallet('secret'));
 
     const destination = ref(route.params.destination);
-    const amount = ref(parseFloat(route.params.amount));
+    const amount = ref(0);
 
     const ScanQRCode = () => {
 

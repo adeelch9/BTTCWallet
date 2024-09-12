@@ -116,7 +116,7 @@
                 </ul>
             </div>
 
-            <p class="w600-dots-1" style="direction: ltr;"><span style="font-size: 1rem;" class="w500-dots-1">{{ balance }}</span> {{ currencies[currency] }}</p>
+            <p class="w600-dots-1" style="direction: ltr;"><span style="font-size: 1rem;" class="w500-dots-1">{{ parseFloat(balance).toLocaleString('en-US', { minimumFractionDigits: 6, maximumFractionDigits: 6 }) }}</span> {{ currencies[currency] }}</p>
         </div>
 
         <div id="container-actions">

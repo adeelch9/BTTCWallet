@@ -6,7 +6,8 @@ BTTCWallet is a Feature-Rich demonstration of a BTT Wallet app built in Telegram
 - npm v8.19.4
 - Composer version 2.7.7
 - PHP version 8.2.16
-
+- Docker version 26.1.4
+- Docker Compose version 2.27.1
 
 ## Laravel Backend API Depoloyment
 - clone the repository to your server and navigate to the api folder

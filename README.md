@@ -122,9 +122,10 @@ BTTCWallet is a Feature-Rich demonstration of a BTT Wallet app built in Telegram
 ## Telegram Bot Deployment
 
   - Create a new bot on Telegram using the `@BotFather` bot.
-  - Use the command `/newapp` to create a new mini app
-  - Select your bot and provide a name and description for the app
-  - Upload an icon image for your app
+  - Use the `/newbot` command to create a new bot.
+  - Use the command `/newapp` to create a new mini app.
+  - Select your bot and provide a title and description for the app.
+  - Upload an icon image for your app.
   - Enter the URL where your webApp is hosted (Ensure the URL provided to BotFather is correct and accessible)
   
 ## Test your Mini App

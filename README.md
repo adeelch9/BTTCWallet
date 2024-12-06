@@ -1,5 +1,5 @@
 # BTTCWallet
-BTTCWallet is a Feature-Rich demonstration of a BTT Wallet app built in Telegram. Wallet is currently set to testnet. Head over to the api/app/Http/Controllers/DPX.php file to change the network to mainnet. You can use this app to generate a new wallet, check your balance, send and receive BTT tokens, and view your transaction history.
+BTTCWallet is a Feature-Rich demonstration of a BTT Wallet app built in Telegram. Wallet is currently set to testnet. Head over to the api/app/Http/Controllers/DPX.php file to change the network to mainnet. You can use this app to generate a new wallet, check your balance, send and receive BTT tokens, and view your transaction history. Please note that the wallet information, such as the address and secret key etc, is stored in plain text in the SQLite database. Developers should implement additional security measures to ensure this information remains protected.
 
 ## Prerequisites
 - Node.js v16.20.2 
@@ -37,6 +37,13 @@ BTTCWallet is a Feature-Rich demonstration of a BTT Wallet app built in Telegram
   chmod 775 database
   ```
 
+- install sqlite3 to interact with the database tables to see the wallet information
+  ```
+  sudo apt update
+  sudo apt install sqlite3
+
+  ```
+  
 - run migrations
   
   ```
